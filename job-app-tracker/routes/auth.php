@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobApplicationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +38,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
     
     Route::post('/jobs', [JobApplicationController::class, 'store'])->name('job.store');
+    Route::get('/job-applications', [JobApplicationController::class, 'index']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -62,6 +64,10 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 
     Route::post('/jobs', [JobApplicationController::class, 'store'])->name('job.store');
+    Route::get('/job-applications', [JobApplicationController::class, 'index'])->name('job-applications');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::delete('/jobs/{id}', [JobApplicationController::class, 'destroy']);
+    Route::resource('jobs', JobApplicationController::class);
 
 });
 

@@ -1,35 +1,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import JobApplicationTable from '@/Components/JobApplicationTable';
-
-
-const applications = [
-    { company: 'Company A', position: 'Developer', status: 'Pending', applicationDate: '2024-10-10' },
-    { company: 'Company B', position: 'Designer', status: 'Interviewed', applicationDate: '2024-10-15' },
-    // Add more job applications as needed
-];
-
+import { Link } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
+
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Dashboard" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            You're logged in!
-                        </div>
-                    </div>  {/* Job Application Table */}
-                    <div className="mt-8">
-                        <JobApplicationTable applications={applications} />
+                    <div className="mb-4">
+                        <Link href="/job-applications" className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            View Job Applications
+                        </Link>
                     </div>
                 </div>
             </div>
