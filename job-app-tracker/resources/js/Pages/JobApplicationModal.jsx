@@ -41,6 +41,7 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                                     className="border rounded w-full p-2"
                                 >
                                     <option value="">Select Status</option>
+                                    <option value="New">New</option>
                                     <option value="Waiting">Waiting</option>
                                     <option value="Accepted">Accepted</option>
                                     <option value="Rejected">Rejected</option>

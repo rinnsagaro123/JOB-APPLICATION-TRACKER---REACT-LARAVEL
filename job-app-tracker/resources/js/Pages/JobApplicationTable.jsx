@@ -108,6 +108,8 @@ export default function JobApplicationTable({ applications: initialApplications 
                 return { bgColor: 'bg-red-600', textColor: 'text-white' }; // Red background
             case 'Waiting':
                 return { bgColor: 'bg-yellow-600', textColor: 'text-black' }; // Yellow background
+            case 'New':
+                return { bgColor: 'bg-blue-600', textColor: 'text-white' }; // Blue background for New
             default:
                 return { bgColor: 'bg-gray-400', textColor: 'text-black' }; // Default gray
         }
