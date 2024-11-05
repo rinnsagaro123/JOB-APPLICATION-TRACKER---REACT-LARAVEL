@@ -183,7 +183,7 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                             onClick={onClose}
                             className="mr-2 bg-gray-300 text-black rounded px-4 py-2"
                         >
-                            Exit
+                           {isViewMode ? 'Exit' : 'Cancel'}
                         </button>
                         {!isViewMode && (
                             <button
