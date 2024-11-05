@@ -12,17 +12,25 @@ class JobApplicationController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'company' => 'required|string|max:255',
             'position' => 'required|string|max:255',
-            'status' => 'required|string|max:255',
-            'applicationDate' => 'required|date',
+            'status' => 'nullable|string',
+            'applicationDate' => 'nullable|date',
+            'platform' => 'nullable|string',
+            'link' => 'nullable|url',
+            'applicationStatusDate' => 'nullable|date',
+            'contactPerson' => 'nullable|string|max:255',
+            'responseDueDate' => 'nullable|date',
+            'applicationType' => 'nullable|string',
+            'location' => 'nullable|string',
+            'notes' => 'nullable|string',
+            'followUpStatus' => 'nullable|string',
         ]);
 
-        JobApplication::create($request->all());
+        JobApplication::create($validatedData);
 
-        return response()->json(['message' => 'Job application added successfully!'], 201);
-        
+        return redirect()->back()->with('success', 'Job Application added successfully.');
     }
     public function index()
     {
@@ -48,7 +56,16 @@ class JobApplicationController extends Controller
             'company' => 'required|string|max:255',
             'position' => 'required|string|max:255',
             'status' => 'required|string|max:100',
-            'applicationDate' => 'required|date', // Ensure this is a valid date
+            'applicationDate' => 'required|date',
+            'platform' => 'nullable|string|max:255',
+            'link' => 'nullable|url',
+            'applicationStatusDate' => 'nullable|date',
+            'contactPerson' => 'nullable|string|max:255',
+            'responseDueDate' => 'nullable|date',
+            'applicationType' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'notes' => 'nullable|string',
+            'followUpStatus' => 'nullable|string|max:100',
         ]);
     
         if ($validator->fails()) {
@@ -67,6 +84,15 @@ class JobApplicationController extends Controller
         $jobApplication->position = $request->input('position');
         $jobApplication->status = $request->input('status');
         $jobApplication->applicationDate = $request->input('applicationDate');
+        $jobApplication->platform = $request->input('platform');
+        $jobApplication->link = $request->input('link');
+        $jobApplication->applicationStatusDate = $request->input('applicationStatusDate');
+        $jobApplication->contactPerson = $request->input('contactPerson');
+        $jobApplication->responseDueDate = $request->input('responseDueDate');
+        $jobApplication->applicationType = $request->input('applicationType');
+        $jobApplication->location = $request->input('location');
+        $jobApplication->notes = $request->input('notes');
+        $jobApplication->followUpStatus = $request->input('followUpStatus');
     
         // Save the updated job application
         $jobApplication->save();
@@ -74,5 +100,6 @@ class JobApplicationController extends Controller
         // Optionally, return the updated application as JSON
         return response()->json($jobApplication, 200);
     }
+    
 }
 
