@@ -15,8 +15,8 @@ export default function JobApplicationTable({ applications: initialApplications 
     const navigate = useNavigate();
     const [popupMessage, setPopupMessage] = useState(''); // State for popup message
     const [showPopup, setShowPopup] = useState(false);
+    const [isViewMode, setViewMode] = useState(false);
     
-
     useEffect(() => {
         setTotalApplications(applications.length);
     }, [applications]);
@@ -29,8 +29,14 @@ export default function JobApplicationTable({ applications: initialApplications 
     const handleEditApplication = (id) => {
         const applicationToEdit = applications.find(app => app.id === id);
         setCurrentApplication(applicationToEdit);
+        setViewMode(false);
         setIsModalOpen(true);
+    };
 
+    const handleViewApplication = (application) => {
+        setCurrentApplication(application);
+        setViewMode(true); // Set view mode to true
+        setIsModalOpen(true);
     };
 
     const handleDeleteApplication = async (id) => {
@@ -83,7 +89,6 @@ export default function JobApplicationTable({ applications: initialApplications 
                     setPopupMessage('Job application added successfully!'); 
                     setShowPopup(true); 
                     setTimeout(() => setShowPopup(false), 7000); 
-
                 }
                 setIsModalOpen(false);
                 setCurrentApplication(null);
@@ -95,7 +100,6 @@ export default function JobApplicationTable({ applications: initialApplications 
         }
     };
     
-
     const getStatusStyles = (status) => {
         switch (status) {
             case 'Accepted':
@@ -109,7 +113,6 @@ export default function JobApplicationTable({ applications: initialApplications 
         }
     };
     
-
     return (
         <AuthenticatedLayout>
         <div className="py-12">
@@ -148,27 +151,20 @@ export default function JobApplicationTable({ applications: initialApplications 
 
                 {/* Applications Table */}
                 <div className="overflow-x-auto bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            <table className="min-w-full text-left text-sm">
+                    <div className="p-6 text-gray-900 dark:text-gray-100">
+                        <table className="min-w-full text-left text-sm">
                             <thead className="bg-gray-100 dark:bg-gray-700">
                                 <tr>
                                     <th className="px-4 py-2">Status</th>
                                     <th className="px-4 py-2">Company</th>
                                     <th className="px-4 py-2">Position</th>
                                     <th className="px-4 py-2">Application Date</th>
-                                    <th className="px-4 py-2">Application Type</th>
-                                    <th className="px-4 py-2">Location</th>
-                                    <th className="px-4 py-2">Notes</th>
-                                    <th className="px-4 py-2">Follow-Up Status</th>
-                                    <th className="px-4 py-2">Platform</th>
-                                    <th className="px-4 py-2">Link</th>                                
-                                    <th className="px-4 py-2">Contact Person</th>
                                     <th className="px-4 py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {applications.map((application) => (
-                                <tr key={`${application.id}-${application.company}`} className="border-b border-gray-200 dark:border-gray-700">
+                                <tr key={application.id} className="border-b border-gray-200 dark:border-gray-700">
                                     <td className="px-4 py-2">
                                         <div className={`inline-block rounded-full py-1 px-3 ${getStatusStyles(application.status).bgColor}`}>
                                             <span className={`${getStatusStyles(application.status).textColor}`}>
@@ -176,16 +172,16 @@ export default function JobApplicationTable({ applications: initialApplications 
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-4 py-2">{application.company}</td>
+                                    <td className="px-4 py-2">
+                                        <button 
+                                            onClick={() => handleViewApplication(application)} // Open modal on company click
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            {application.company}
+                                        </button>
+                                    </td>
                                     <td className="px-4 py-2">{application.position}</td>
                                     <td className="px-4 py-2">{application.applicationDate}</td>
-                                    <td className="px-4 py-2">{application.applicationType}</td>
-                                    <td className="px-4 py-2">{application.location}</td>
-                                    <td className="px-4 py-2">{application.notes}</td>
-                                    <td className="px-4 py-2">{application.followUpStatus}</td> 
-                                    <td className="px-4 py-2">{application.platform}</td>
-                                    <td className="px-4 py-2"><a href={application.link}>{application.link}</a></td>
-                                    <td className="px-4 py-2">{application.contactPerson}</td>
                                     <td className="px-4 py-2">
                                         <button
                                             onClick={() => handleEditApplication(application.id)}
@@ -202,7 +198,7 @@ export default function JobApplicationTable({ applications: initialApplications 
                                     </td>
                                 </tr>
                             ))}
-                        </tbody>
+                            </tbody>
                         </table>
 
                         {/* No Applications Message */}
@@ -222,7 +218,8 @@ export default function JobApplicationTable({ applications: initialApplications 
                 onSubmit={handleSubmit(onSubmit)}
                 register={register}
                 errors={errors}
-                application={currentApplication} // Pass current application for editing
+                application={currentApplication} // Pass current application for editing or viewing
+                isViewMode={isViewMode} // Pass the view mode prop
             />
 
         </div>
