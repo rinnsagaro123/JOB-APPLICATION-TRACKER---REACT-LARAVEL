@@ -30,7 +30,7 @@ class JobApplicationController extends Controller
 
         JobApplication::create($validatedData);
 
-        return redirect()->back()->with('success', 'Job Application added successfully.');
+        return response()->json(['message' => 'Job application added successfully!'], 201);
     }
     public function index()
     {

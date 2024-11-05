@@ -70,7 +70,8 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                             <option value="Contract">Contract</option>
                             {/* Add more options as needed */}
                         </select>
-                                        </div>
+                        {errors.applicationType && <span className="text-red-600">This field is required</span>}
+                    </div>
                     <div className="mb-4">
                         <label className="block mb-1">Location:</label>
                         <select
@@ -86,6 +87,7 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                             <option value="Onsite">Onsite</option>
                             <option value="Don't know yet">Don't know yet</option>
                         </select>
+                        {errors.location && <span className="text-red-600">This field is required</span>}
                     </div>
                     <div className="mb-4">
                         <label className="block mb-1">Notes:</label>
@@ -109,6 +111,7 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                                 <option value="Followed up">Followed up</option>
                                 <option value="No follow-up needed">No follow-up needed</option>
                         </select>
+                        {errors.followUpStatus && <span className="text-red-600">This field is required</span>}
                     </div>
                     <div className="mb-4">
                         <label className="block mb-1">Platform:</label>
@@ -118,6 +121,7 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                             defaultValue={application?.platform || ''}
                             className="border rounded w-full p-2"
                         />
+                        {errors.plaform && <span className="text-red-600">This field is required</span>}
                     </div>
                     <div className="mb-4">
                         <label className="block mb-1">Link:</label>
@@ -127,15 +131,7 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                             defaultValue={application?.link || ''}
                             className="border rounded w-full p-2"
                         />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block mb-1">Application Status Date:</label>
-                        <input
-                            type="date"
-                            {...register('applicationStatusDate')}
-                            defaultValue={application?.applicationStatusDate || ''}
-                            className="border rounded w-full p-2"
-                        />
+                          {errors.link && <span className="text-red-600">This field is required</span>}
                     </div>
                     <div className="mb-4">
                         <label className="block mb-1">Contact Person:</label>
@@ -145,15 +141,7 @@ const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, appl
                             defaultValue={application?.contactPerson || ''}
                             className="border rounded w-full p-2"
                         />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block mb-1">Response Due Date:</label>
-                        <input
-                            type="date"
-                            {...register('responseDueDate')}
-                            defaultValue={application?.responseDueDate || ''}
-                            className="border rounded w-full p-2"
-                        />
+                          {errors.contactPerson && <span className="text-red-600">This field is required</span>}
                     </div>
                     <div className="flex justify-end">
                         <button

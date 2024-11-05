@@ -74,16 +74,16 @@ export default function JobApplicationTable({ applications: initialApplications 
     
             if (response.ok) {
                 if (currentApplication) {
-                    // Update existing application in state
                     setApplications(applications.map(app => (app.id === currentApplication.id ? result : app)));
-                    setPopupMessage('Job application updated successfully!'); // Set the success message for edit
-                    setShowPopup(true); // Show the popup
-                    setTimeout(() => setShowPopup(false), 3000); // Hide the popup after 3 seconds
+                    setPopupMessage('Job application updated successfully!'); 
+                    setShowPopup(true); 
+                    setTimeout(() => setShowPopup(false), 3000);
                 } else {
-                    handleNewApplication(result); // Handle new application addition
-                    setPopupMessage('Job application added successfully!'); // Set the success message for add
-                    setShowPopup(true); // Show the popup
-                    setTimeout(() => setShowPopup(false), 7000); // Hide the popup after 3 seconds
+                    handleNewApplication(result); 
+                    setPopupMessage('Job application added successfully!'); 
+                    setShowPopup(true); 
+                    setTimeout(() => setShowPopup(false), 7000); 
+
                 }
                 setIsModalOpen(false);
                 setCurrentApplication(null);
@@ -161,53 +161,48 @@ export default function JobApplicationTable({ applications: initialApplications 
                                     <th className="px-4 py-2">Notes</th>
                                     <th className="px-4 py-2">Follow-Up Status</th>
                                     <th className="px-4 py-2">Platform</th>
-                                    <th className="px-4 py-2">Link</th>
-                                    <th className="px-4 py-2">Application Status Date</th>
+                                    <th className="px-4 py-2">Link</th>                                
                                     <th className="px-4 py-2">Contact Person</th>
-                                    <th className="px-4 py-2">Response Due Date</th>
                                     <th className="px-4 py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-    {applications.map((application) => (
-        <tr key={`${application.id}-${application.company}`} className="border-b border-gray-200 dark:border-gray-700">
-             <td className="px-4 py-2">
-                <div className={`inline-block rounded-full py-1 px-3 ${getStatusStyles(application.status).bgColor}`}>
-                    <span className={`${getStatusStyles(application.status).textColor}`}>
-                        {application.status}
-                    </span>
-                </div>
-            </td>
-            <td className="px-4 py-2">{application.company}</td>
-            <td className="px-4 py-2">{application.position}</td>
-            <td className="px-4 py-2">{application.applicationDate}</td>
-            <td className="px-4 py-2">{application.applicationType}</td>
-            <td className="px-4 py-2">{application.location}</td>
-            <td className="px-4 py-2">{application.notes}</td>
-            <td className="px-4 py-2">{application.followUpStatus}</td> 
-            <td className="px-4 py-2">{application.platform}</td>
-            <td className="px-4 py-2"><a href={application.link}>{application.link}</a></td>
-            <td className="px-4 py-2">{application.applicationStatusDate}</td>
-            <td className="px-4 py-2">{application.contactPerson}</td>
-            <td className="px-4 py-2">{application.responseDueDate}</td>
-
-            <td className="px-4 py-2">
-                <button
-                    onClick={() => handleEditApplication(application.id)}
-                    className="ml-2 text-blue-600 hover:text-blue-800"
-                >
-                    Edit
-                </button>
-                <button
-                    onClick={() => handleDeleteApplication(application.id)}
-                    className="ml-2 text-red-600 hover:text-red-800"
-                >
-                    Delete
-                </button>
-            </td>
-        </tr>
-    ))}
-</tbody>
+                            {applications.map((application) => (
+                                <tr key={`${application.id}-${application.company}`} className="border-b border-gray-200 dark:border-gray-700">
+                                    <td className="px-4 py-2">
+                                        <div className={`inline-block rounded-full py-1 px-3 ${getStatusStyles(application.status).bgColor}`}>
+                                            <span className={`${getStatusStyles(application.status).textColor}`}>
+                                                {application.status}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-2">{application.company}</td>
+                                    <td className="px-4 py-2">{application.position}</td>
+                                    <td className="px-4 py-2">{application.applicationDate}</td>
+                                    <td className="px-4 py-2">{application.applicationType}</td>
+                                    <td className="px-4 py-2">{application.location}</td>
+                                    <td className="px-4 py-2">{application.notes}</td>
+                                    <td className="px-4 py-2">{application.followUpStatus}</td> 
+                                    <td className="px-4 py-2">{application.platform}</td>
+                                    <td className="px-4 py-2"><a href={application.link}>{application.link}</a></td>
+                                    <td className="px-4 py-2">{application.contactPerson}</td>
+                                    <td className="px-4 py-2">
+                                        <button
+                                            onClick={() => handleEditApplication(application.id)}
+                                            className="ml-2 text-blue-600 hover:text-blue-800"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteApplication(application.id)}
+                                            className="ml-2 text-red-600 hover:text-red-800"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
                         </table>
 
                         {/* No Applications Message */}
