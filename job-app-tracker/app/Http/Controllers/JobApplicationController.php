@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobApplication;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
 
 class JobApplicationController extends Controller
 {
+    /**
+     * Store a new job application.
+     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -28,31 +30,33 @@ class JobApplicationController extends Controller
             'followUpStatus' => 'nullable|string',
         ]);
 
+        // Add the authenticated user's ID
+        $validatedData['user_id'] = auth()->id();
+
         JobApplication::create($validatedData);
 
         return response()->json(['message' => 'Job application added successfully!'], 201);
     }
+
+    /**
+     * List job applications for the authenticated user.
+     */
     public function index()
     {
-        // Fetch all job applications from the database
-        $applications = JobApplication::all();
+        // Fetch applications for the authenticated user
+        $applications = JobApplication::where('user_id', auth()->id())->get();
 
-        // Pass the applications data to the Inertia component
         return Inertia::render('JobApplicationTable', [
             'applications' => $applications,
         ]);
     }
-    public function destroy($id)
-    {
-        $job = JobApplication::findOrFail($id);
-        $job->delete();
 
-        return response()->json(['message' => 'Job application deleted successfully!'], 200);
-    }
+    /**
+     * Update a job application.
+     */
     public function update(Request $request, $id)
     {
-        // Validate the incoming request data
-        $validator = Validator::make($request->all(), [
+        $validatedData = $request->validate([
             'company' => 'required|string|max:255',
             'position' => 'required|string|max:255',
             'status' => 'required|string|max:100',
@@ -67,39 +71,67 @@ class JobApplicationController extends Controller
             'notes' => 'nullable|string',
             'followUpStatus' => 'nullable|string|max:100',
         ]);
-    
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-    
-        // Find the job application by ID
-        $jobApplication = JobApplication::find($id);
-    
+
+        // Find the job application and check ownership
+        $jobApplication = JobApplication::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
         if (!$jobApplication) {
-            return response()->json(['message' => 'Job application not found'], 404);
+            return response()->json(['message' => 'Job application not found or unauthorized'], 403);
         }
-    
-        // Update the job application fields
-        $jobApplication->company = $request->input('company');
-        $jobApplication->position = $request->input('position');
-        $jobApplication->status = $request->input('status');
-        $jobApplication->applicationDate = $request->input('applicationDate');
-        $jobApplication->platform = $request->input('platform');
-        $jobApplication->link = $request->input('link');
-        $jobApplication->applicationStatusDate = $request->input('applicationStatusDate');
-        $jobApplication->contactPerson = $request->input('contactPerson');
-        $jobApplication->responseDueDate = $request->input('responseDueDate');
-        $jobApplication->applicationType = $request->input('applicationType');
-        $jobApplication->location = $request->input('location');
-        $jobApplication->notes = $request->input('notes');
-        $jobApplication->followUpStatus = $request->input('followUpStatus');
-    
-        // Save the updated job application
-        $jobApplication->save();
-    
-        // Optionally, return the updated application as JSON
+
+        // Update the job application
+        $jobApplication->update($validatedData);
+
         return response()->json($jobApplication, 200);
     }
-    
-}
 
+    /**
+     * Delete a job application.
+     */
+    public function destroy($id)
+    {
+        // Find the job application and check ownership
+        $jobApplication = JobApplication::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$jobApplication) {
+            return response()->json(['message' => 'Job application not found or unauthorized'], 403);
+        }
+
+        $jobApplication->delete();
+
+        return response()->json(['message' => 'Job application deleted successfully!'], 200);
+    }
+
+    /**
+     * Search job applications.
+     */
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search', '');
+
+        // Fetch applications for the authenticated user that match the search term
+        $applications = JobApplication::where('user_id', auth()->id())
+            ->when($searchTerm, function ($query, $searchTerm) {
+                return $query->where('company', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('position', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('status', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('applicationDate', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('platform', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('link', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('applicationStatusDate', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('contactPerson', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('responseDueDate', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('applicationType', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('location', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('notes', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('followUpStatus', 'like', '%' . $searchTerm . '%');
+            })
+            ->get();
+
+        return response()->json($applications);
+    }
+}

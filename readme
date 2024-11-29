@@ -1,5 +1,9 @@
 composer install
 npm install
 npm install react-router-dom
+npm install react-icons
+npm install lodash.debounce
+npm install @inertiajs/inertia
 php artisan key:generate
 php artisan migrate
+

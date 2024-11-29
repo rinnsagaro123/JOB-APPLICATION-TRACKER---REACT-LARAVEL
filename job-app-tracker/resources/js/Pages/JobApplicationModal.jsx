@@ -2,15 +2,23 @@ import React from 'react';
 
 const JobApplicationModal = ({ isOpen, onClose, onSubmit, register, errors, application, isViewMode }) => {
     if (!isOpen) return null;
-
+    console.log("Current application data:", application);
     const currentDate = new Date().toISOString().split('T')[0];
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 shadow-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto">
-                <h2 className="text-lg font-semibold mb-4">
+        <div className="bg-white rounded-lg p-6 shadow-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">
                     {isViewMode ? 'View Job Application' : application ? 'Edit Job Application' : 'Add Job Application'}
                 </h2>
+                <button
+                    onClick={onClose}
+                    className="text-gray-600 hover:text-gray-800 font-bold text-2xl"
+                >
+                    &times;
+                </button>
+            </div>
                 <form onSubmit={isViewMode ? (e) => e.preventDefault() : onSubmit}>
                     {/* Only show these fields when not in view mode */}
                     {!isViewMode && (

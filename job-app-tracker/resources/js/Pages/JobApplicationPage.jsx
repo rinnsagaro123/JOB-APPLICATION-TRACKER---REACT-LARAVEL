@@ -1,8 +1,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import JobApplicationTable from '@/Pages/JobApplicationTable';
+import Sidebar from '../Components/Sidebar';
 
 export default function JobApplicationsPage({ applications }) {
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+    const toggleSidebar = () => {
+        setSidebarOpen((prev) => !prev);
+    };
     return (
         <AuthenticatedLayout>
             <Head title="Job Applications" />

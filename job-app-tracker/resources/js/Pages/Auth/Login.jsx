@@ -5,6 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import Background from '@/Components/Background';
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -24,14 +25,13 @@ export default function Login({ status, canResetPassword }) {
     return (
         <GuestLayout>
             <Head title="Log in" />
-
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div className="mb-4 text-sm font-medium text-green-600 text-center">
                     {status}
                 </div>
             )}
 
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className="max-w-md w-full space-y-4 mx-auto">
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -49,7 +49,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                <div>
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
@@ -65,7 +65,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="mt-4 block">
+                <div className="mt-4 flex items-center justify-between">
                     <label className="flex items-center">
                         <Checkbox
                             name="remember"
@@ -78,23 +78,37 @@ export default function Login({ status, canResetPassword }) {
                             Remember me
                         </span>
                     </label>
+
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
+                <div className="flex justify-center">
+                <PrimaryButton className="ms-4" disabled={processing}>
+                        Log in
+                    </PrimaryButton>
+                </div>
+                <div className="flex justify-center">
+                {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                            className="text-sm text-indigo-600 hover:text-indigo-800"
                         >
                             Forgot your password?
                         </Link>
                     )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
                 </div>
+
             </form>
+
+            {/* Not registered? */}
+            <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+                <span>Not registered yet? </span>
+                <Link
+                    href={route('register')}
+                    className="text-indigo-500 hover:text-indigo-700"
+                >
+                    Create an account
+                </Link>
+            </div>
         </GuestLayout>
     );
 }

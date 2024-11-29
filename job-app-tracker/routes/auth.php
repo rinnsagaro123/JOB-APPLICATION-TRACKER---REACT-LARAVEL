@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobApplicationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AIChatController;
 use Inertia\Inertia;
 
 Route::middleware('guest')->group(function () {
@@ -37,8 +38,10 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
     
-    Route::post('/jobs', [JobApplicationController::class, 'store'])->name('job.store');
-    Route::get('/job-applications', [JobApplicationController::class, 'index']);
+    // Route::post('/jobs', [JobApplicationController::class, 'store'])->name('job.store');
+    // Route::get('/job-applications', [JobApplicationController::class, 'index']);
+    // Route::post('/chatbot-response', [AIChatController::class, 'getResponse']);
+    // Route::get('/job-applications/search', [JobApplicationController::class, 'search']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -67,11 +70,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/job-applications', [JobApplicationController::class, 'index'])->name('job-applications');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::delete('/jobs/{id}', [JobApplicationController::class, 'destroy']);
+    Route::post('/chatbot-response', [AIChatController::class, 'getResponse']);
     Route::resource('jobs', JobApplicationController::class);
+    Route::get('/job-applications/search', [JobApplicationController::class, 'search']);
+    Route::get('/add-job', function () {return Inertia::render('AddJob');})->name('add.job');
+    Route::get('/chatbot-conversations', [AIChatController::class, 'getConversationHistory']);
+    Route::resource('chatbot-messages', AIChatController::class);
+    Route::post('/rasa-webhook', [RasaController::class, 'sendMessage']);
+
+
 
 });
 
-Route::get('/add-job', function () {
-    return Inertia::render('AddJob');
-})->name('add.job');
+
 

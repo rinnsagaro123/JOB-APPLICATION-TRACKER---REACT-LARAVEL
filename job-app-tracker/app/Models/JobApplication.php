@@ -15,14 +15,15 @@ class JobApplication extends Model
         'position',
         'status',
         'applicationDate',
-        'platform',          // E.g., "LinkedIn", "Company Website"
-        'link',              // Link to job posting
-        'applicationStatusDate', // Date of last status update
-        'contactPerson',     // Name of contact person
-        'responseDueDate',   // Date when a response is expected
-        'applicationType',   // E.g., "Full-Time", "Internship"
-        'location',          // Location of job
-        'notes',             // Additional notes about the application
-        'followUpStatus',    // Status of follow-up actions
+        'platform',
+        'link',
+        'applicationStatusDate',
+        'contactPerson',
+        'responseDueDate',
+        'applicationType',
+        'location',
+        'notes',
+        'followUpStatus',
+        'user_id', // Add this
     ];
 }
