@@ -10,6 +10,7 @@ import Sidebar from '../Components/Sidebar';
 import Chatbot from '../Components/Chatbot'; 
 import debounce from 'lodash.debounce';
 import DeleteConfirmationModal from '../Components/DeleteConfirmationModal';
+import { FaTimes } from 'react-icons/fa';
 
 export default function JobApplicationTable({ applications: initialApplications }) {
     const [applications, setApplications] = useState(initialApplications);
@@ -25,7 +26,45 @@ export default function JobApplicationTable({ applications: initialApplications 
     const [searchTerm, setSearchTerm] = useState(''); // State to store search term
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] = useState(false);
     const [selectedApplicationId, setSelectedApplicationId] = useState(null);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [filteredApplications, setFilteredApplications] = useState(applications);
     
+
+    const handleRowsChange = (event) => {
+        setRowsPerPage(event.target.value === 'All' ? applications.length : parseInt(event.target.value));
+    };
+
+    // const filteredApplications = applications.filter((app) =>
+    //     // Check for company, position, status, etc.
+    //     (app.company && app.company.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.position && app.position.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.status && app.status.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.applicationDate && app.applicationDate.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.platform && app.platform.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.link && app.link.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.applicationStatusDate && app.applicationStatusDate.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.contactPerson && app.contactPerson.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.responseDueDate && app.responseDueDate.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.applicationType && app.applicationType.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.location && app.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.notes && app.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.followUpStatus && app.followUpStatus.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        
+    //     // Check if searchTerm matches any part of the applicationDate (month, day, or year)
+    //     (app.applicationDate && 
+    //         new Date(app.applicationDate).toLocaleString('default', { month: 'long' }).toLowerCase().includes(searchTerm.toLowerCase())) ||
+    //     (app.applicationDate && 
+    //         new Date(app.applicationDate).getDate().toString().includes(searchTerm)) ||
+    //     (app.applicationDate && 
+    //         new Date(app.applicationDate).getFullYear().toString().includes(searchTerm))
+    // );
+    
+    const rowHeight = 50; // Approximate height of one row in pixels
+    const containerHeight = Math.min(filteredApplications.length, rowsPerPage) * rowHeight + 60; // Adjust for table headers
+    
+    const handleClear = () => {
+        setSearchTerm('');
+    };
 
     const handleNewApplication = (newApplication) => {
         setApplications([...applications, newApplication]);
@@ -174,19 +213,55 @@ export default function JobApplicationTable({ applications: initialApplications 
         }
     }, 500);
     
-    const handleInputChange = (event) => {
-        const value = event.target.value;
-        setSearchTerm(value); // Update the search input immediately
-        handleSearch(value);  // Debounce the actual search operation
+    // const handleInputChange = (event) => {
+    //     const value = event.target.value;
+    //     setSearchTerm(value); // Update the search input immediately
+    //     handleSearch(value);  // Debounce the actual search operation
+    // };
+
+    const handleInputChange = (e) => {
+        setSearchTerm(e.target.value);
+        handleSearch(value);
     };
 
     const toggleSidebar = () => {
         setSidebarOpen((prev) => !prev);
     };
     
+    // useEffect(() => {
+    //     setTotalApplications(applications.length);
+    // }, [applications]);
+
+
     useEffect(() => {
-        setTotalApplications(applications.length);
-    }, [applications]);
+        const filtered = applications.filter((app) =>
+            (app.company && app.company.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.position && app.position.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.status && app.status.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.applicationDate && app.applicationDate.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.platform && app.platform.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.link && app.link.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.applicationStatusDate && app.applicationStatusDate.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.contactPerson && app.contactPerson.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.responseDueDate && app.responseDueDate.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.applicationType && app.applicationType.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.location && app.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.notes && app.notes.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.followUpStatus && app.followUpStatus.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            // Optionally, check for date parts like month, day, or year // To match specific dates like "December" or "2024"
+            (app.applicationDate && 
+                new Date(app.applicationDate).toLocaleString('default', { month: 'long' }).toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (app.applicationDate && 
+                new Date(app.applicationDate).getDate().toString().includes(searchTerm)) ||
+            (app.applicationDate && 
+                new Date(app.applicationDate).getFullYear().toString().includes(searchTerm))
+            
+        );
+
+        // Set the filtered applications and update the total count
+        setFilteredApplications(filtered);
+        setTotalApplications(filtered.length);
+    }, [applications, searchTerm]);
 
     return (
         <AuthenticatedLayout>
@@ -201,69 +276,92 @@ export default function JobApplicationTable({ applications: initialApplications 
                         {popupMessage}
                     </div>
                 )}
-                {/* <div className="mb-4 flex justify-end">
-                    <Link
-                        href="/dashboard" // Change this to your dashboard route
-                        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gray-600 border border-transparent rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                        Back to Dashboard
-                    </Link>
-                </div> */}
-                {/* Total Applications Count */}
                 <div className="mb-4 flex items-start justify-between">
-    {/* Left Section: Search Input and Total Applications */}
-    <div className="w-full max-w-md">
-        {/* Dynamic Search Display */}
-        <div className="mb-2">
-           
-            <input
-                type="text"
-                placeholder="Search job applications..."
-                value={searchTerm} // Bind the searchTerm state
-                onChange={handleInputChange} // Update state and trigger debounce logic
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-md placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-500"
-            />
-        </div>
-        {/* Total Applications */}
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Search for: <span className="font-semibold text-gray-800 dark:text-gray-200">{searchTerm || ""}</span>
-            </label>
-        <div className="text-sm text-gray-600 dark:text-gray-400">
-            Total Applications: <span className="font-medium text-gray-800 dark:text-gray-200">{totalApplications}</span>
-        </div>
+            {/* Left Section: Search Input and Total Applications */}
+            <div className="w-full max-w-md">
+                {/* Dynamic Search Display */}
+                <div className="mb-2 relative">
+                <input
+                    type="text"
+                    placeholder="Search job applications..."
+                    value={searchTerm} // Bind the searchTerm state
+                    onChange={handleInputChange} // Update state and trigger debounce logic
+                    className="w-full p-3 border border-gray-300 rounded-lg shadow-md placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-500"
+                />
+                
+                {/* Clear Icon */}
+                {searchTerm && (
+                    <button
+                        type="button"
+                        onClick={handleClear}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                        <FaTimes />
+                    </button>
+                )}
+            </div>
+                {/* Total Applications */}
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Search for: <span className="font-semibold text-gray-800 dark:text-gray-200">{searchTerm || ""}</span>
+                    </label>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                    Total Applications: <span className="font-medium text-gray-800 dark:text-gray-200">{totalApplications}</span>
+                    <div>
+                        <label htmlFor="rowsPerPage" className="mr-2">
+                            Rows per page:
+                        </label>
+                        <select
+                            id="rowsPerPage"
+                            value={rowsPerPage}
+                            onChange={handleRowsChange}
+                            className="border rounded-md shadow-sm"
+                        >
+                            <option value={10}>10</option>
+                            <option value={30}>30</option>
+                            <option value={50}>50</option>
+                            <option value="All">All</option>
+                        </select>
+                    </div>
+                </div>
         
-    </div>
+                </div>
 
-    <div className="flex w-auto mt-14 mr-12">
-        <button
-            onClick={() => {
-                setCurrentApplication(null); // Reset for new application
-                setIsModalOpen(true);
-            }}
-            className="px-12 py-2 text-base font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-            Add Job
-        </button>
+                <div className="flex w-auto mt-14 mr-12">
+                    <button
+                        onClick={() => {
+                            setCurrentApplication(null); // Reset for new application
+                            setIsModalOpen(true);
+                        }}
+                        className="px-12 py-2 text-base font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                        Add Job
+                    </button>
 
-        </div>
-</div>
+                    </div>
+            </div>
 
 
                 {/* Applications Table */}
                 <div className="overflow-x-auto bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                    <div className="p-6 text-gray-900 dark:text-gray-100">
-                        <table className="min-w-full text-left text-sm">
+                <div
+                className="overflow-auto bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
+                style={{ height: `${containerHeight}px` }}
+            >
+                 <table className="min-w-full text-left text-sm">
                             <thead className="bg-gray-100 dark:bg-gray-700">
                                 <tr>
                                     <th className="px-4 py-2">Status</th>
-                                    <th className="px-4 py-2">Company</th>
+                                    <th className="px-4 py-2 text-left whitespace-nowrap">Company</th>
                                     <th className="px-4 py-2">Position</th>
-                                    <th className="px-4 py-2">Application Date</th>
+                                    <th className="px-4 py-2">Platform</th>
+                                    <th className="px-4 py-2 text-left whitespace-nowrap">Application Date</th>
                                     <th className="px-4 py-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {applications.map((application) => (
+                            {filteredApplications
+                                .sort((a, b) => new Date(b.applicationDate) - new Date(a.applicationDate)) // Sort by date descending
+                                .map((application) => (
                                 <tr key={application.id} className="border-b border-gray-200 dark:border-gray-700">
                                     <td className="px-4 py-2">
                                         <div className={`inline-block rounded-full py-1 px-3 ${getStatusStyles(application.status).bgColor}`}>
@@ -281,20 +379,25 @@ export default function JobApplicationTable({ applications: initialApplications 
                                         </button>
                                     </td>
                                     <td className="px-4 py-2">{application.position}</td>
-                                    <td className="px-4 py-2">{application.applicationDate}</td>
+                                    <td className="px-4 py-2">{application.platform}</td>
                                     <td className="px-4 py-2">
-                                        <button
-                                            onClick={() => handleEditApplication(application.id)}
-                                            className="ml-2 text-blue-600 hover:text-blue-800"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => openDeleteModal(application.id)}
-                                            className="ml-2 text-red-600 hover:text-red-800"
-                                        >
-                                            Delete
-                                        </button>
+                                        {new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' }).format(new Date(application.applicationDate))}
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        <div className="flex space-x-2">
+                                            <button
+                                                onClick={() => handleEditApplication(application.id)}
+                                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => openDeleteModal(application.id)}
+                                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -302,7 +405,7 @@ export default function JobApplicationTable({ applications: initialApplications 
                         </table>
 
                         {/* No Applications Message */}
-                        {applications.length === 0 && (
+                        {filteredApplications.length === 0 && (
                             <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
                                 No job applications found.
                             </div>

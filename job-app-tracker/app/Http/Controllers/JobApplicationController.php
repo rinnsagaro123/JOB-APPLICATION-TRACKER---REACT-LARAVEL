@@ -112,26 +112,29 @@ class JobApplicationController extends Controller
     public function search(Request $request)
     {
         $searchTerm = $request->input('search', '');
-
+    
         // Fetch applications for the authenticated user that match the search term
         $applications = JobApplication::where('user_id', auth()->id())
             ->when($searchTerm, function ($query, $searchTerm) {
-                return $query->where('company', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('position', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('status', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('applicationDate', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('platform', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('link', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('applicationStatusDate', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('contactPerson', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('responseDueDate', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('applicationType', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('location', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('notes', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('followUpStatus', 'like', '%' . $searchTerm . '%');
+                $query->where(function ($subQuery) use ($searchTerm) {
+                    $subQuery->where('company', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('position', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('status', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('applicationDate', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('platform', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('link', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('applicationStatusDate', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('contactPerson', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('responseDueDate', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('applicationType', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('location', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('notes', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('followUpStatus', 'like', '%' . $searchTerm . '%');
+                });
             })
             ->get();
-
+    
         return response()->json($applications);
     }
+    
 }
